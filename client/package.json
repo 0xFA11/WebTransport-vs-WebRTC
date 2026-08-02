@@ -3,5 +3,7 @@
 	"type": "module",
 	"scripts": {},
 	"dependencies": {},
-	"devDependencies": {}
+	"devDependencies": {
+		"typescript": "7.0.2"
+	}
 }
