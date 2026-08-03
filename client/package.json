@@ -3,6 +3,7 @@
 	"type": "module",
 	"scripts": {
 		"format": "oxfmt",
+		"lint": "oxlint",
 		"dev": "vite",
 		"build": "tsc --build --noEmit && vite build"
 	},
@@ -19,6 +20,8 @@
 		"@tailwindcss/vite": "4.3.3",
 		"vite": "8.2.0",
 		"oxfmt": "0.61.0",
+		"oxlint": "1.76.0",
+		"oxlint-tsgolint": "7.0.2001",
 		"typescript": "7.0.2"
 	}
 }
