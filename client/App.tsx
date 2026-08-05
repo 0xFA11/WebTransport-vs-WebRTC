@@ -29,8 +29,8 @@ const chartData = [
 
 export const App = () => {
 	return (
-		<div className="flex flex-col gap-4">
-			<div className="text-2xl font-bold">WebTransport vs WebRTC</div>
+		<div className="typeset flex flex-col gap-4">
+			<h1>WebTransport vs WebRTC</h1>
 			<Separator />
 			<div className="flex w-full max-w-sm flex-col gap-6 py-12">
 				<Message>

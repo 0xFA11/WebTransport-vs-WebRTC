@@ -3,6 +3,7 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/inter";
 @import "@fontsource/ibm-plex-mono";
+@import "./typeset.css";
 
 * {
 	@apply border-border outline-ring/50;
