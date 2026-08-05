@@ -10,6 +10,7 @@
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"allowJs": true,
+		"skipLibCheck": true,
 		"incremental": true,
 		"noEmit": true,
 		"strict": true,
