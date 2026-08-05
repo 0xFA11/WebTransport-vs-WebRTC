@@ -2,5 +2,9 @@
 	"npm.packageManager": "pnpm",
 	"js/ts.preferences.useAliasesForRenames": false,
 	"js/ts.preferences.preferTypeOnlyAutoImports": true,
-	"js/ts.preferences.importModuleSpecifier": "non-relative"
+	"js/ts.preferences.importModuleSpecifier": "non-relative",
+	"json.schemaDownload.trustedDomains": { "https://ui.shadcn.com/schema.json": true },
+	"tailwindCSS.classFunctions": ["tw", "cn", "cx", "cva", "clsx"],
+	"tailwindCSS.classAttributes": ["class", "className", ".*[cC]lass", ".*[cC]lassName"],
+	"files.associations": { "*.css": "tailwindcss" }
 }
