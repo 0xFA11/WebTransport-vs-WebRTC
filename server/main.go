@@ -2,22 +2,26 @@ package main
 
 import (
 	"fmt"
-	"log/slog"
+	"log"
 	"net/http"
-	"os"
 
 	"github.com/quic-go/quic-go/http3"
+	"github.com/quic-go/webtransport-go"
 )
 
 func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir("public")))
+
+	tcpServer := http.Server{Addr: ":8443", Handler: mux}
+	udpServer := webtransport.Server{H3: &http3.Server{Addr: ":8443", Handler: mux}}
+
 	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "pong")
+		fmt.Fprint(w, "pong")
 	})
-	err := http3.ListenAndServeTLS(":8443", "cert.pem", "key.pem", mux)
-	if err != nil {
-		slog.Error("cannot listen", "err", err)
-		os.Exit(1)
-	}
+
+	go func() {
+		log.Fatal(udpServer.ListenAndServeTLS("cert.pem", "key.pem"))
+	}()
+	log.Fatal(tcpServer.ListenAndServeTLS("cert.pem", "key.pem"))
 }
