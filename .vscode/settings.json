@@ -6,5 +6,9 @@
 	"json.schemaDownload.trustedDomains": { "https://ui.shadcn.com/schema.json": true },
 	"tailwindCSS.classFunctions": ["tw", "cn", "cx", "cva", "clsx"],
 	"tailwindCSS.classAttributes": ["class", "className", ".*[cC]lass", ".*[cC]lassName"],
-	"files.associations": { "*.css": "tailwindcss" }
+	"files.associations": { "*.css": "tailwindcss" },
+	"oxc.path.tsgolint": "client/node_modules/.bin/tsgolint",
+	"oxc.tsConfigPath": "client/tsconfig.json",
+	"oxc.configPath": "client/oxlint.config.ts",
+	"oxc.fmt.configPath": "client/oxfmt.config.ts"
 }
