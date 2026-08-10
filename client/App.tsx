@@ -1,19 +1,10 @@
 import { useState } from "react";
-import { Button } from "#client/ui/button.tsx";
-import { Input } from "#client/ui/input.tsx";
-import { Bubble, BubbleContent, BubbleGroup } from "#client/ui/bubble.tsx";
-import {
-	MessageScroller,
-	MessageScrollerButton,
-	MessageScrollerContent,
-	MessageScrollerItem,
-	MessageScrollerProvider,
-	MessageScrollerViewport,
-} from "#client/ui/message-scroller.tsx";
-import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "#client/ui/card.tsx";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "#client/ui/chart.tsx";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
-import { ArrowUpIcon, ZapIcon, XIcon } from "lucide-react";
+import { ZapIcon, XIcon } from "lucide-react";
+import { Button } from "#client/ui/button.tsx";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "#client/ui/card.tsx";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "#client/ui/chart.tsx";
+import { Chat } from "#client/Chat.tsx";
 
 const chartConfig = {
 	desktop: {
@@ -41,202 +32,32 @@ export const App = () => {
 		<div className="typeset flex flex-col gap-4">
 			<h1>WebTransport vs WebRTC</h1>
 			<div className="flex gap-4">
-				<Card className="h-140 flex-1 gap-0">
-					<CardHeader className="border-b">
-						<CardTitle>WebTransport</CardTitle>
-						<CardDescription>Some status message goes here</CardDescription>
-						<CardAction>
-							<Button>
-								<ZapIcon />
-								Connect
-							</Button>
-						</CardAction>
-					</CardHeader>
-					<CardContent className="min-h-0 p-0">
-						<MessageScrollerProvider autoScroll={true}>
-							<MessageScroller>
-								<MessageScrollerViewport>
-									<MessageScrollerContent className="p-(--card-spacing)">
-										<MessageScrollerItem className="flex">
-											<Bubble variant="muted">
-												<BubbleContent>
-													The build failed during dependency installation.
-												</BubbleContent>
-											</Bubble>
-										</MessageScrollerItem>
-										<MessageScrollerItem className="flex justify-end" scrollAnchor>
-											<Bubble>
-												<BubbleContent>Can you share the exact error?</BubbleContent>
-											</Bubble>
-										</MessageScrollerItem>
-										<MessageScrollerItem className="flex">
-											<BubbleGroup>
-												<Bubble variant="muted">
-													<BubbleContent>Here&apos;s the error from the logs</BubbleContent>
-												</Bubble>
-												<Bubble variant="muted">
-													<BubbleContent>
-														Something went wrong with the build. The libraries are not
-														installed correctly. Try running the build again.
-													</BubbleContent>
-												</Bubble>
-											</BubbleGroup>
-										</MessageScrollerItem>
-										<MessageScrollerItem className="flex">
-											<BubbleGroup>
-												<Bubble variant="muted">
-													<BubbleContent>Here&apos;s the error from the logs</BubbleContent>
-												</Bubble>
-												<Bubble variant="muted">
-													<BubbleContent>
-														Something went wrong with the build. The libraries are not
-														installed correctly. Try running the build again.
-													</BubbleContent>
-												</Bubble>
-											</BubbleGroup>
-										</MessageScrollerItem>
-										<MessageScrollerItem className="flex">
-											<BubbleGroup>
-												<Bubble variant="muted">
-													<BubbleContent>Here&apos;s the error from the logs</BubbleContent>
-												</Bubble>
-												<Bubble variant="muted">
-													<BubbleContent>
-														Something went wrong with the build. The libraries are not
-														installed correctly. Try running the build again.
-													</BubbleContent>
-												</Bubble>
-											</BubbleGroup>
-										</MessageScrollerItem>
-										{messages.map((text, index) => (
-											<MessageScrollerItem key={index} className="flex justify-end">
-												<Bubble>
-													<BubbleContent>{text}</BubbleContent>
-												</Bubble>
-											</MessageScrollerItem>
-										))}
-									</MessageScrollerContent>
-								</MessageScrollerViewport>
-								<MessageScrollerButton />
-							</MessageScroller>
-						</MessageScrollerProvider>
-					</CardContent>
-					<CardFooter>
-						<form
-							className="flex w-full gap-2"
-							onSubmit={(event) => {
-								event.preventDefault();
-								const form = event.currentTarget;
-								const text = new FormData(form).get("message")?.toString().trim();
-								if (!text) return;
-								setMessages((prev) => [...prev, text]);
-								form.reset();
-							}}>
-							<Input name="message" placeholder="Type a message" autoComplete="off" />
-							<Button type="submit" size="icon">
-								<ArrowUpIcon />
-							</Button>
-						</form>
-					</CardFooter>
-				</Card>
-				<Card className="h-140 flex-1 gap-0">
-					<CardHeader className="border-b">
-						<CardTitle>WebRTC</CardTitle>
-						<CardDescription>Some status message goes here</CardDescription>
-						<CardAction>
-							<Button variant="destructive">
-								<XIcon />
-								Disconnect
-							</Button>
-						</CardAction>
-					</CardHeader>
-					<CardContent className="min-h-0 p-0">
-						<MessageScrollerProvider autoScroll={true}>
-							<MessageScroller>
-								<MessageScrollerViewport>
-									<MessageScrollerContent className="p-(--card-spacing)">
-										<MessageScrollerItem className="flex">
-											<Bubble variant="muted">
-												<BubbleContent>
-													The build failed during dependency installation.
-												</BubbleContent>
-											</Bubble>
-										</MessageScrollerItem>
-										<MessageScrollerItem className="flex justify-end" scrollAnchor>
-											<Bubble>
-												<BubbleContent>Can you share the exact error?</BubbleContent>
-											</Bubble>
-										</MessageScrollerItem>
-										<MessageScrollerItem className="flex">
-											<BubbleGroup>
-												<Bubble variant="muted">
-													<BubbleContent>Here&apos;s the error from the logs</BubbleContent>
-												</Bubble>
-												<Bubble variant="muted">
-													<BubbleContent>
-														Something went wrong with the build. The libraries are not
-														installed correctly. Try running the build again.
-													</BubbleContent>
-												</Bubble>
-											</BubbleGroup>
-										</MessageScrollerItem>
-										<MessageScrollerItem className="flex">
-											<BubbleGroup>
-												<Bubble variant="muted">
-													<BubbleContent>Here&apos;s the error from the logs</BubbleContent>
-												</Bubble>
-												<Bubble variant="muted">
-													<BubbleContent>
-														Something went wrong with the build. The libraries are not
-														installed correctly. Try running the build again.
-													</BubbleContent>
-												</Bubble>
-											</BubbleGroup>
-										</MessageScrollerItem>
-										<MessageScrollerItem className="flex">
-											<BubbleGroup>
-												<Bubble variant="muted">
-													<BubbleContent>Here&apos;s the error from the logs</BubbleContent>
-												</Bubble>
-												<Bubble variant="muted">
-													<BubbleContent>
-														Something went wrong with the build. The libraries are not
-														installed correctly. Try running the build again.
-													</BubbleContent>
-												</Bubble>
-											</BubbleGroup>
-										</MessageScrollerItem>
-										{messages.map((text, index) => (
-											<MessageScrollerItem key={index} className="flex justify-end">
-												<Bubble>
-													<BubbleContent>{text}</BubbleContent>
-												</Bubble>
-											</MessageScrollerItem>
-										))}
-									</MessageScrollerContent>
-								</MessageScrollerViewport>
-								<MessageScrollerButton />
-							</MessageScroller>
-						</MessageScrollerProvider>
-					</CardContent>
-					<CardFooter>
-						<form
-							className="flex w-full gap-2"
-							onSubmit={(event) => {
-								event.preventDefault();
-								const form = event.currentTarget;
-								const text = new FormData(form).get("message")?.toString().trim();
-								if (!text) return;
-								setMessages((prev) => [...prev, text]);
-								form.reset();
-							}}>
-							<Input name="message" placeholder="Type a message" autoComplete="off" />
-							<Button type="submit" size="icon">
-								<ArrowUpIcon />
-							</Button>
-						</form>
-					</CardFooter>
-				</Card>
+				<Chat
+					className="h-140 flex-1"
+					title="WebTransport"
+					description="Some status message goes here"
+					action={
+						<Button>
+							<ZapIcon />
+							Connect
+						</Button>
+					}
+					messages={messages}
+					onSend={(text) => setMessages((prev) => [...prev, text])}
+				/>
+				<Chat
+					className="h-140 flex-1"
+					title="WebRTC"
+					description="Some status message goes here"
+					action={
+						<Button variant="destructive">
+							<XIcon />
+							Disconnect
+						</Button>
+					}
+					messages={messages}
+					onSend={(text) => setMessages((prev) => [...prev, text])}
+				/>
 			</div>
 			<Card className="mx-auto h-140 w-full max-w-2xl">
 				<CardHeader>
