@@ -1,6 +1,9 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/json"
+	"encoding/pem"
 	"fmt"
 	"io"
 	"log/slog"
@@ -19,7 +22,19 @@ func main() {
 	httpServer := http.Server{Addr: ":8443", Handler: httpMux}
 
 	wtpMux := http.NewServeMux()
-	wtpServer := webtransport.Server{H3: &http3.Server{Addr: ":3443", Handler: wtpMux}}
+	wtpServer := webtransport.Server{H3: &http3.Server{Addr: ":3443", Handler: wtpMux, EnableDatagrams: true}}
+
+	certPEM, err := os.ReadFile("cert.pem")
+	if err != nil {
+		slog.Error("cannot read cert.pem", "err", err)
+		os.Exit(1)
+	}
+	certDER, _ := pem.Decode(certPEM)
+	if certDER == nil {
+		slog.Error("cannot decode cert.pem", "err", err)
+		os.Exit(1)
+	}
+	certHash := sha256.Sum256(certDER.Bytes)
 
 	rtcSocket, err := net.ListenUDP("udp", &net.UDPAddr{Port: 4443})
 	if err != nil {
@@ -54,13 +69,23 @@ func main() {
 		}
 	})
 
+	httpMux.HandleFunc("OPTIONS /webtransport", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
+		w.Header().Set("Access-Control-Allow-Methods", "GET")
+		w.WriteHeader(http.StatusNoContent)
+	})
+	httpMux.HandleFunc("GET /webtransport", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]any{"h3Addr": wtpServer.H3.Addr, "certHash": certHash[:]})
+	})
+
 	httpMux.HandleFunc("OPTIONS /webrtc", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
 		w.Header().Set("Access-Control-Allow-Methods", "POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		w.WriteHeader(http.StatusNoContent)
 	})
-
 	httpMux.HandleFunc("POST /webrtc", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
 

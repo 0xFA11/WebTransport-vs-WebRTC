@@ -22,4 +22,16 @@ export default defineConfig({
 		},
 		chunkSizeWarningLimit: 2048,
 	},
+	server: {
+		proxy: {
+			"/webrtc": {
+				target: "https://localhost:8443/webrtc",
+				changeOrigin: true,
+			},
+			"/webtransport": {
+				target: "https://localhost:8443/webtransport",
+				changeOrigin: true,
+			},
+		},
+	},
 });
