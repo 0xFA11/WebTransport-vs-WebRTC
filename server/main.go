@@ -54,7 +54,16 @@ func main() {
 		}
 	})
 
+	httpMux.HandleFunc("OPTIONS /webrtc", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
+		w.Header().Set("Access-Control-Allow-Methods", "POST")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.WriteHeader(http.StatusNoContent)
+	})
+
 	httpMux.HandleFunc("POST /webrtc", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
+
 		offer, err := io.ReadAll(http.MaxBytesReader(w, r.Body, 4096))
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
