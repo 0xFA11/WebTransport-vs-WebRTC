@@ -2,6 +2,8 @@ package main
 
 import (
 	"crypto/sha256"
+	"crypto/tls"
+	"encoding/base64"
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
@@ -22,19 +24,31 @@ func main() {
 	httpServer := http.Server{Addr: ":8443", Handler: httpMux}
 
 	wtpMux := http.NewServeMux()
-	wtpServer := webtransport.Server{H3: &http3.Server{Addr: ":3443", Handler: wtpMux, EnableDatagrams: true}}
+	wtpServer := webtransport.Server{
+		H3: &http3.Server{
+			Addr:            ":3443",
+			Handler:         wtpMux,
+			EnableDatagrams: true,
+			TLSConfig:       &tls.Config{NextProtos: []string{http3.NextProtoH3}},
+		},
+		CheckOrigin: func(r *http.Request) bool { return true },
+	}
 
-	certPEM, err := os.ReadFile("cert.pem")
-	if err != nil {
-		slog.Error("cannot read cert.pem", "err", err)
-		os.Exit(1)
+	certHashBase64 := ""
+	{
+		certPEM, err := os.ReadFile("cert.pem")
+		if err != nil {
+			slog.Error("cannot read cert.pem", "err", err)
+			os.Exit(1)
+		}
+		certDER, _ := pem.Decode(certPEM)
+		if certDER == nil {
+			slog.Error("cannot decode cert.pem", "err", err)
+			os.Exit(1)
+		}
+		certHash := sha256.Sum256(certDER.Bytes)
+		certHashBase64 = base64.StdEncoding.EncodeToString(certHash[:])
 	}
-	certDER, _ := pem.Decode(certPEM)
-	if certDER == nil {
-		slog.Error("cannot decode cert.pem", "err", err)
-		os.Exit(1)
-	}
-	certHash := sha256.Sum256(certDER.Bytes)
 
 	rtcSocket, err := net.ListenUDP("udp", &net.UDPAddr{Port: 4443})
 	if err != nil {
@@ -77,7 +91,7 @@ func main() {
 	httpMux.HandleFunc("GET /webtransport", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]any{"h3Addr": wtpServer.H3.Addr, "certHash": certHash[:]})
+		json.NewEncoder(w).Encode(map[string]any{"h3Addr": wtpServer.H3.Addr, "certHashBase64": certHashBase64})
 	})
 
 	httpMux.HandleFunc("OPTIONS /webrtc", func(w http.ResponseWriter, r *http.Request) {

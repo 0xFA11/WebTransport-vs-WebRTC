@@ -25,12 +25,14 @@ export default defineConfig({
 	server: {
 		proxy: {
 			"/webrtc": {
-				target: "https://localhost:8443/webrtc",
+				target: "https://localhost:8443",
 				changeOrigin: true,
+				secure: false,
 			},
 			"/webtransport": {
-				target: "https://localhost:8443/webtransport",
+				target: "https://localhost:8443",
 				changeOrigin: true,
+				secure: false,
 			},
 		},
 	},
