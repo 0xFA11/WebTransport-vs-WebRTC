@@ -1,11 +1,9 @@
-import { useState } from "react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
-import { ZapIcon, XIcon } from "lucide-react";
+import { cn } from "#client/ui/utils.ts";
 import { Button } from "#client/ui/button.tsx";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "#client/ui/card.tsx";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "#client/ui/chart.tsx";
 import { Chat } from "#client/Chat.tsx";
-import { cn } from "#client/ui/utils.ts";
 
 const Chart = (props: { className?: string }) => {
 	const chartConfig = {
@@ -84,8 +82,6 @@ const Chart = (props: { className?: string }) => {
 };
 
 export const App = () => {
-	const [wtpMessages, setWtpMessages] = useState<string[]>(["Hello", "WebTransport"]);
-	const [rtcMessages, setRtcMessages] = useState<string[]>(["Hello", "WebRTC"]);
 	return (
 		<div className="typeset flex flex-col gap-4">
 			<h1>WebTransport vs WebRTC</h1>
@@ -93,28 +89,18 @@ export const App = () => {
 				<Chat
 					className="h-140 flex-1"
 					title="WebTransport"
-					description="Some status message goes here"
-					action={
-						<Button>
-							<ZapIcon />
-							Connect
-						</Button>
-					}
-					messages={wtpMessages}
-					onSend={(text) => setWtpMessages((prev) => [...prev, text])}
+					description="disconnected"
+					action={<Button>Connect</Button>}
+					messages={["hello", "webtransport"]}
+					onSend={() => {}}
 				/>
 				<Chat
 					className="h-140 flex-1"
 					title="WebRTC"
-					description="Some status message goes here"
-					action={
-						<Button variant="destructive">
-							<XIcon />
-							Disconnect
-						</Button>
-					}
-					messages={rtcMessages}
-					onSend={(text) => setRtcMessages((prev) => [...prev, text])}
+					description="disconnected"
+					action={<Button>Connect</Button>}
+					messages={["hello", "webrtc"]}
+					onSend={() => {}}
 				/>
 			</div>
 			<Chart />
