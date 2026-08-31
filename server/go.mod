@@ -1,15 +1,15 @@
 module server
 
-go 1.26
+go 1.27
 
 require (
 	github.com/pion/webrtc/v4 v4.2.18
-	github.com/quic-go/quic-go v0.61.0
-	github.com/quic-go/webtransport-go v0.12.0
+	github.com/quic-go/quic-go v0.62.0
+	github.com/quic-go/webtransport-go v0.13.0
 )
 
 require (
-	github.com/dunglas/httpsfv v1.1.0 // indirect
+	github.com/dunglas/httpsfv v1.1.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/pion/datachannel v1.6.2 // indirect
 	github.com/pion/dtls/v3 v3.1.5 // indirect
