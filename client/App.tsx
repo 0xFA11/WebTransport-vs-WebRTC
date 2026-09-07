@@ -4,6 +4,7 @@ import { Button } from "#client/ui/button.tsx";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "#client/ui/card.tsx";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "#client/ui/chart.tsx";
 import { Chat } from "#client/Chat.tsx";
+import { useWebTransport } from "#client/hooks/webTransport.ts";
 
 const Chart = (props: { className?: string }) => {
 	const chartConfig = {
@@ -38,7 +39,8 @@ const Chart = (props: { className?: string }) => {
 						margin={{
 							left: 12,
 							right: 12,
-						}}>
+						}}
+					>
 						<CartesianGrid vertical={false} />
 						<XAxis
 							dataKey="month"
@@ -81,27 +83,46 @@ const Chart = (props: { className?: string }) => {
 	);
 };
 
+const WebTransportChat = () => {
+	const { isConnected, connect, disconnect } = useWebTransport();
+	return (
+		<Chat
+			className="h-140 flex-1"
+			title="WebTransport"
+			description={isConnected ? "connected" : "disconnected"}
+			action={
+				isConnected ? (
+					<Button onClick={disconnect}>Disconnect</Button>
+				) : (
+					<Button onClick={connect}>Connect</Button>
+				)
+			}
+			messages={["hello", "webtransport"]}
+			onSend={() => {}}
+		/>
+	);
+};
+
+const WebRTCChat = () => {
+	return (
+		<Chat
+			className="h-140 flex-1"
+			title="WebRTC"
+			description="disconnected"
+			action={<Button>Connect</Button>}
+			messages={["hello", "webrtc"]}
+			onSend={() => {}}
+		/>
+	);
+};
+
 export const App = () => {
 	return (
 		<div className="typeset flex flex-col gap-4">
 			<h1>WebTransport vs WebRTC</h1>
 			<div className="flex gap-4">
-				<Chat
-					className="h-140 flex-1"
-					title="WebTransport"
-					description="disconnected"
-					action={<Button>Connect</Button>}
-					messages={["hello", "webtransport"]}
-					onSend={() => {}}
-				/>
-				<Chat
-					className="h-140 flex-1"
-					title="WebRTC"
-					description="disconnected"
-					action={<Button>Connect</Button>}
-					messages={["hello", "webrtc"]}
-					onSend={() => {}}
-				/>
+				<WebTransportChat />
+				<WebRTCChat />
 			</div>
 			<Chart />
 		</div>

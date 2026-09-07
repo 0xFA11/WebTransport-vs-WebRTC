@@ -7,6 +7,8 @@ export default defineConfig({
 	},
 	plugins: ["oxc", "eslint", "typescript", "promise", "react", "unicorn"],
 	rules: {
+		"eqeqeq": "error",
+		"curly": ["error", "all"],
 		"react/rules-of-hooks": "error",
 		"react/exhaustive-deps": "error",
 		"react/react-compiler": "error",

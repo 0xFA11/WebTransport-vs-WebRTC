@@ -12,7 +12,7 @@ export default defineConfig({
 	trailingComma: "all",
 	arrowParens: "always",
 	bracketSpacing: true,
-	bracketSameLine: true,
+	bracketSameLine: false,
 	insertFinalNewline: true,
 	singleAttributePerLine: false,
 	sortImports: false,
