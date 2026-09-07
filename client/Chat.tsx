@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { ArrowUpIcon } from "lucide-react";
-import { cn } from "#client/ui/utils.ts";
+import { cn } from "cn";
 import { Button } from "#client/ui/button.tsx";
 import { Input } from "#client/ui/input.tsx";
 import {
@@ -57,7 +57,8 @@ export const Chat = (props: {
 								}
 							}
 							form.reset();
-						}}>
+						}}
+					>
 						<Input name="message" placeholder="Type a message" autoComplete="off" />
 						<Button type="submit" size="icon">
 							<ArrowUpIcon />

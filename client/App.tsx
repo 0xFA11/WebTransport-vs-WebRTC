@@ -1,5 +1,6 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
-import { cn } from "#client/ui/utils.ts";
+import { cn } from "cn";
 import { Button } from "#client/ui/button.tsx";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "#client/ui/card.tsx";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "#client/ui/chart.tsx";
@@ -84,21 +85,74 @@ const Chart = (props: { className?: string }) => {
 };
 
 const WebTransportChat = () => {
-	const { isConnected, connect, disconnect } = useWebTransport();
+	const { state, connect, disconnect, sendText, recvText } = useWebTransport();
+	const [messages, setMessages] = useState<string[]>([]);
+
+	useEffect(() => {
+		if (state !== "connected") {
+			return;
+		}
+		let isReading = true;
+		void (async () => {
+			while (isReading) {
+				let text: string | null;
+				try {
+					text = await recvText();
+				} catch (err) {
+					console.error("webtransport recv failed", err);
+					return;
+				}
+				if (text === null) {
+					return;
+				}
+				if (!isReading) {
+					return;
+				}
+				setMessages((messages) => [...messages, text]);
+			}
+		})();
+		return () => {
+			isReading = false;
+		};
+	}, [state, recvText]);
+
+	const onConnect = useCallback(() => {
+		setMessages([]);
+		connect().catch((err) => console.error("webtransport connect failed", err));
+	}, [connect]);
+
+	const onDisconnect = useCallback(() => {
+		setMessages([]);
+		disconnect();
+	}, [disconnect]);
+
+	const onSend = useCallback(
+		(message: string) => {
+			sendText(message).catch((err) => console.error("webtransport send failed", err));
+		},
+		[sendText],
+	);
+
+	const action = useMemo(() => {
+		switch (state) {
+			default:
+			case "connecting":
+				return <Button disabled={true}>Connecting</Button>;
+			case "connected":
+				return <Button onClick={onDisconnect}>Disconnect</Button>;
+			case "disconnected":
+				return <Button onClick={onConnect}>Connect</Button>;
+		}
+	}, [state, onConnect, onDisconnect]);
+
 	return (
 		<Chat
 			className="h-140 flex-1"
 			title="WebTransport"
-			description={isConnected ? "connected" : "disconnected"}
-			action={
-				isConnected ? (
-					<Button onClick={disconnect}>Disconnect</Button>
-				) : (
-					<Button onClick={connect}>Connect</Button>
-				)
-			}
-			messages={["hello", "webtransport"]}
-			onSend={() => {}}
+			description={state}
+			action={action}
+			messages={messages}
+			onSend={onSend}
 		/>
 	);
 };
@@ -116,7 +170,18 @@ const WebRTCChat = () => {
 	);
 };
 
+const useThemeProvider = () => {
+	useEffect(() => {
+		const darkMedia = matchMedia("(prefers-color-scheme: dark)");
+		const updateTheme = () => document.documentElement.classList.toggle("dark", darkMedia.matches);
+		updateTheme();
+		darkMedia.addEventListener("change", updateTheme);
+		return () => darkMedia.removeEventListener("change", updateTheme);
+	}, []);
+};
+
 export const App = () => {
+	useThemeProvider();
 	return (
 		<div className="typeset flex flex-col gap-4">
 			<h1>WebTransport vs WebRTC</h1>

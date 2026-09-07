@@ -17,9 +17,9 @@ importers:
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
-      clsx:
-        specifier: 2.1.1
-        version: 2.1.1
+      cn:
+        specifier: 0.2.6
+        version: 0.2.6
       lucide-react:
         specifier: 1.28.0
         version: 1.28.0(react@19.2.8)
@@ -33,11 +33,8 @@ importers:
         specifier: 3.8.0
         version: 3.8.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react-is@19.2.8)(react@19.2.8)(redux@5.0.1)
       shadcn:
-        specifier: 4.16.1
-        version: 4.16.1(typescript@7.0.2)
-      tailwind-merge:
-        specifier: 3.6.0
-        version: 3.6.0
+        specifier: 4.19.1
+        version: 4.19.1(typescript@7.0.2)
       tailwindcss:
         specifier: 4.3.3
         version: 4.3.3
@@ -1146,6 +1143,11 @@ packages:
     resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
     engines: {node: '>=6'}
 
+  cn@0.2.6:
+    resolution: {integrity: sha512-+i4L0zUGgRcEnhsxueVrP7iBGxBx5iD0WOTYg1MwFEu2ZyCmH5Ov2V1cul2Ht5UchRQQgftCf4be/RxspuW6QQ==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   code-block-writer@13.0.3:
     resolution: {integrity: sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==}
 
@@ -2226,8 +2228,8 @@ packages:
   setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
 
-  shadcn@4.16.1:
-    resolution: {integrity: sha512-XLFzfNNIUPlUlyheFEzj0H4Vnhi9nI0nl3Nfgg8HYXW1FkUVhVT1X+mgmOUW8aWL5SeG0A+yJIV5fm3Hr9MVkQ==}
+  shadcn@4.19.1:
+    resolution: {integrity: sha512-QZ++YvYniZCEZHxBenWUsZnzKCDSUKwRqi0io7ovS9Him02zrg1U8AJCRTL0PWOaEM46NpTlw8PwewWk+9rCng==}
     engines: {node: '>=20.18.1'}
     hasBin: true
 
@@ -2264,6 +2266,14 @@ packages:
 
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
+
+  smart-buffer@4.2.0:
+    resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
+    engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
+
+  socks@2.8.10:
+    resolution: {integrity: sha512-e0VyvkVTwVYViNovRkZ9aodhxVlyoMn7eJhVUPxZ+eK9P/7CBkxvvsBOHqFPEH416726W8tLXXXjKwqgTErrCQ==}
+    engines: {node: '>= 10.0.0', npm: '>= 3.0.0'}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -3332,6 +3342,8 @@ snapshots:
 
   clsx@2.1.1: {}
 
+  cn@0.2.6: {}
+
   code-block-writer@13.0.3: {}
 
   commander@11.1.0: {}
@@ -4318,7 +4330,7 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 
-  shadcn@4.16.1(typescript@7.0.2):
+  shadcn@4.19.1(typescript@7.0.2):
     dependencies:
       '@babel/core': 7.29.7
       '@babel/parser': 7.29.8
@@ -4344,6 +4356,7 @@ snapshots:
       postcss-selector-parser: 7.1.4
       prompts: 2.4.2
       recast: 0.23.19
+      socks: 2.8.10
       stringify-object: 5.0.0
       tailwind-merge: 3.6.0
       ts-morph: 26.0.0
@@ -4397,6 +4410,13 @@ snapshots:
   signal-exit@4.1.0: {}
 
   sisteransi@1.0.5: {}
+
+  smart-buffer@4.2.0: {}
+
+  socks@2.8.10:
+    dependencies:
+      ip-address: 10.4.0
+      smart-buffer: 4.2.0
 
   source-map-js@1.2.1: {}
 

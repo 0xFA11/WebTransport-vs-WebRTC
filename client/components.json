@@ -15,7 +15,7 @@
 	"aliases": {
 		"components": "#client",
 		"ui": "#client/ui",
-		"utils": "#client/ui/utils.ts",
+		"utils": "",
 		"lib": "#client/lib",
 		"hooks": "#client/hooks"
 	},
