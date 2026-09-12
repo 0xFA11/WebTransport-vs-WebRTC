@@ -95,14 +95,14 @@ const WebTransportChat = () => {
 		let isReading = true;
 		void (async () => {
 			while (isReading) {
-				let text: string | null;
+				let text: string | undefined;
 				try {
 					text = await recvText();
 				} catch (err) {
 					console.error("webtransport recv failed", err);
 					return;
 				}
-				if (text === null) {
+				if (!text) {
 					return;
 				}
 				if (!isReading) {

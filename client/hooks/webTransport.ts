@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import type { Transport } from "#client/types.ts";
 
-export const useWebTransport = () => {
+export const useWebTransport = (): Transport => {
 	const [state, setState] = useState<"disconnected" | "connecting" | "connected">("disconnected");
 	const transportRef = useRef<WebTransport>(null);
 	const writerRef = useRef<WritableStreamDefaultWriter<Uint8Array>>(null);
@@ -75,20 +76,18 @@ export const useWebTransport = () => {
 	}, []);
 
 	const sendText = useCallback(
-		async (text: string): Promise<void> => {
-			await sendBytes(textEncoder.encode(text));
-		},
+		(text: string): Promise<void> => sendBytes(textEncoder.encode(text)),
 		[sendBytes, textEncoder],
 	);
 
-	const recvBytes = useCallback(async (): Promise<Uint8Array | null> => {
+	const recvBytes = useCallback(async (): Promise<Uint8Array | undefined> => {
 		const bytes = await readerRef.current?.read();
-		return bytes?.value ?? null;
+		return bytes?.value;
 	}, []);
 
-	const recvText = useCallback(async (): Promise<string | null> => {
+	const recvText = useCallback(async (): Promise<string | undefined> => {
 		const bytes = await recvBytes();
-		return bytes === null ? null : textDecoder.decode(bytes);
+		return bytes ? textDecoder.decode(bytes) : undefined;
 	}, [recvBytes, textDecoder]);
 
 	useEffect(() => disconnect, [disconnect]);
