@@ -25,10 +25,16 @@ export const useWebTransport = () => {
 		try {
 			setState("connecting");
 
-			const config = (await (await fetch("/webtransport")).json()) as { h3Addr: string; certHashBase64: string };
-			const transport = new WebTransport(`https://${location.hostname}${config.h3Addr}/webtransport`, {
+			const config = (await (await fetch("/webtransport")).json()) as {
+				http3Addr: string;
+				certSha256: string;
+			};
+			const transport = new WebTransport(`https://${location.hostname}${config.http3Addr}/webtransport`, {
 				serverCertificateHashes: [
-					{ algorithm: "sha-256", value: Uint8Array.fromBase64(config.certHashBase64) },
+					{
+						algorithm: "sha-256",
+						value: Uint8Array.fromBase64(config.certSha256),
+					},
 				],
 			});
 			transportRef.current = transport;

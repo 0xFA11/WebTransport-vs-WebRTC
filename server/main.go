@@ -18,6 +18,18 @@ import (
 	"github.com/quic-go/webtransport-go"
 )
 
+func certSha256Sum(certPEM string) ([32]byte, error) {
+	bytes, err := os.ReadFile(certPEM)
+	if err != nil {
+		return [32]byte{}, err
+	}
+	block, _ := pem.Decode(bytes)
+	if block == nil {
+		return [32]byte{}, fmt.Errorf("cannot decode %s", certPEM)
+	}
+	return sha256.Sum256(block.Bytes), nil
+}
+
 func main() {
 	httpMux := http.NewServeMux()
 	httpMux.Handle("/", http.FileServer(http.Dir("public")))
@@ -32,22 +44,6 @@ func main() {
 			TLSConfig:       &tls.Config{NextProtos: []string{http3.NextProtoH3}},
 		},
 		CheckOrigin: func(r *http.Request) bool { return true },
-	}
-
-	certHashBase64 := ""
-	{
-		certPEM, err := os.ReadFile("cert.pem")
-		if err != nil {
-			slog.Error("cannot read cert.pem", "err", err)
-			os.Exit(1)
-		}
-		certDER, _ := pem.Decode(certPEM)
-		if certDER == nil {
-			slog.Error("cannot decode cert.pem", "err", err)
-			os.Exit(1)
-		}
-		certHash := sha256.Sum256(certDER.Bytes)
-		certHashBase64 = base64.StdEncoding.EncodeToString(certHash[:])
 	}
 
 	rtcSocket, err := net.ListenUDP("udp", &net.UDPAddr{Port: 4443})
@@ -83,6 +79,11 @@ func main() {
 		}
 	})
 
+	certSha256, err := certSha256Sum("cert.pem")
+	if err != nil {
+		slog.Error("cannot hash cert", "err", err)
+		os.Exit(1)
+	}
 	httpMux.HandleFunc("OPTIONS /webtransport", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
 		w.Header().Set("Access-Control-Allow-Methods", "GET")
@@ -91,7 +92,10 @@ func main() {
 	httpMux.HandleFunc("GET /webtransport", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]any{"h3Addr": wtpServer.H3.Addr, "certHashBase64": certHashBase64})
+		json.NewEncoder(w).Encode(map[string]string{
+			"http3Addr":  wtpServer.H3.Addr,
+			"certSha256": base64.StdEncoding.EncodeToString(certSha256[:]),
+		})
 	})
 
 	httpMux.HandleFunc("OPTIONS /webrtc", func(w http.ResponseWriter, r *http.Request) {
